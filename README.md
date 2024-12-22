@@ -30,3 +30,17 @@
     char date[20];
     
 } 
+// fonction
+qClient* ajouterClient(Client* tete) {
+    Client* new = (Client*)malloc(sizeof(Client));
+    printf("Code client : ");
+    scanf("%s", new->codecli);
+    printf("Prénom : ");
+    scanf("%s", new->prenom);
+    printf("Nom : ");
+    scanf("%s", new->nom);
+    printf("Téléphone : ");
+    scanf("%s", new->tel);
+    printf("Ville : ");
+    scanf("%s", new->ville);
+    new->next = tete; 
