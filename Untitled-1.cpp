@@ -95,3 +95,101 @@ Client* ajouterClient(Client* tete) {
 }
 
 int main() {
+    // Fonction pour générer un code unique
+string generer_code(const string& prefix) {
+    static random_device rd;
+    static mt19937 gen(rd());
+    static uniform_int_distribution<> dis(0, 15);
+
+    stringstream code;
+    code << prefix << "-";
+    for (int i = 0; i < 8; ++i) {
+        int val = dis(gen);
+        code << hex << uppercase << val;
+    }
+    return code.str();
+}
+
+/// Fonctions pour écrire dans un fichier
+void sauvegarder_clients(const vector<Client>& clients) {
+    ofstream fichier("clients.txt");
+    for (const auto& client : clients) {
+        fichier << client.code << ";" << client.prenom << ";" << client.nom << ";"
+                << client.tel << ";" << client.ville << endl;
+    }
+    fichier.close();
+}
+
+void sauvegarder_comptes(const vector<Compte>& comptes) {
+    ofstream fichier("comptes.txt");
+    for (const auto& compte : comptes) {
+        fichier << compte.numero << ";" << compte.dateOuverture << ";" << compte.agence
+                << ";" << compte.solde << ";" << compte.codeClient << endl;
+    }
+    fichier.close();
+}
+void sauvegarder_operations(const vector<Operation>& operations) {
+    ofstream fichier("operations.txt");
+    for (const auto& operation : operations) {
+        fichier << operation.code << ";" << operation.numeroCompte << ";" << operation.typeOp
+                << ";" << operation.montant << ";" << operation.dateOperation << endl;
+    }
+    fichier.close();
+}
+
+// Fonctions pour lire depuis un fichier
+void charger_clients(vector<Client>& clients) {
+    ifstream fichier("clients.txt");
+    if (!fichier.is_open()) return;
+ string ligne;
+    while (getline(fichier, ligne)) {
+        stringstream ss(ligne);
+        string code, prenom, nom, tel, ville;
+        getline(ss, code, ';');
+        getline(ss, prenom, ';');
+        getline(ss, nom, ';');
+        getline(ss, tel, ';');
+        getline(ss, ville, ';');
+        clients.push_back({code, prenom, nom, tel, ville});
+    }
+    fichier.close();
+}
+
+void charger_comptes(vector<Compte>& comptes) {
+    ifstream fichier("comptes.txt");
+    if (!fichier.is_open()) return;
+
+    string ligne;
+    while (getline(fichier, ligne)) {
+        stringstream ss(ligne);
+        string numero, dateOuverture, agence, codeClient;
+        double solde;
+        getline(ss, numero, ';');
+        getline(ss, dateOuverture, ';');
+        getline(ss, agence, ';');
+        ss >> solde;
+        ss.ignore();
+        getline(ss, codeClient, ';');
+        comptes.push_back({numero, dateOuverture, agence, solde, codeClient});
+    }
+    fichier.close();
+}
+void charger_operations(vector<Operation>& operations) {
+    ifstream fichier("operations.txt");
+    if (!fichier.is_open()) return;
+
+    string ligne;
+    while (getline(fichier, ligne)) {
+        stringstream ss(ligne);
+        string code, numeroCompte, typeOp, dateOperation;
+        double montant;
+        getline(ss, code, ';');
+        getline(ss, numeroCompte, ';');
+        getline(ss, typeOp, ';');
+        ss >> montant;
+        ss.ignore();
+        getline(ss, dateOperation, ';');
+        operations.push_back({code, numeroCompte, typeOp, montant, dateOperation});
+    }
+    fichier.close();
+}
